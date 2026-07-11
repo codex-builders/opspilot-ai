@@ -1,0 +1,23 @@
+[
+  {
+    "id": "space-ops",
+    "key": "OPS",
+    "name": "IT Operations Knowledge Base",
+    "description": "Runbooks, known issues, and incident reviews for production IT operations.",
+    "type": "global"
+  },
+  {
+    "id": "space-pay",
+    "key": "PAY",
+    "name": "Payments Platform",
+    "description": "Payment API, settlement, and payments-ledger operational documentation.",
+    "type": "global"
+  },
+  {
+    "id": "space-cab",
+    "key": "CAB",
+    "name": "Change Advisory Board",
+    "description": "Change management policy, risk criteria, and CAB review notes.",
+    "type": "global"
+  }
+]
