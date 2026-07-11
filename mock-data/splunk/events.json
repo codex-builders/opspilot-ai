@@ -1,0 +1,243 @@
+[
+  {
+    "event_id": "evt-1001",
+    "timestamp": "2026-07-11T01:42:03Z",
+    "index": "bank_ops",
+    "source": "/var/log/payment-api/app.log",
+    "sourcetype": "bank:payment_api",
+    "host": "pay-api-prod-02",
+    "service": "payment-api",
+    "environment": "prod",
+    "severity": "INFO",
+    "incident_id": "INC10452",
+    "trace_id": "trc-pay-7710",
+    "message": "Payment authorization request accepted for processing",
+    "fields": {
+      "endpoint": "/v1/payments/authorize",
+      "status_code": 202,
+      "latency_ms": 184,
+      "region": "eu-west-1"
+    }
+  },
+  {
+    "event_id": "evt-1002",
+    "timestamp": "2026-07-11T01:45:18Z",
+    "index": "bank_ops",
+    "source": "/var/log/payment-api/app.log",
+    "sourcetype": "bank:payment_api",
+    "host": "pay-api-prod-02",
+    "service": "payment-api",
+    "environment": "prod",
+    "severity": "WARN",
+    "incident_id": "INC10452",
+    "trace_id": "trc-pay-7712",
+    "message": "Database connection pool saturation detected",
+    "fields": {
+      "endpoint": "/v1/payments/authorize",
+      "pool_active": 118,
+      "pool_max": 120,
+      "wait_ms": 920,
+      "region": "eu-west-1"
+    }
+  },
+  {
+    "event_id": "evt-1003",
+    "timestamp": "2026-07-11T01:46:01Z",
+    "index": "bank_ops",
+    "source": "/var/log/payment-api/app.log",
+    "sourcetype": "bank:payment_api",
+    "host": "pay-api-prod-01",
+    "service": "payment-api",
+    "environment": "prod",
+    "severity": "ERROR",
+    "incident_id": "INC10452",
+    "trace_id": "trc-pay-7718",
+    "message": "Payment authorization failed after database timeout",
+    "fields": {
+      "endpoint": "/v1/payments/authorize",
+      "status_code": 504,
+      "latency_ms": 5902,
+      "database": "payments-ledger-prod",
+      "error_code": "DB_POOL_TIMEOUT"
+    }
+  },
+  {
+    "event_id": "evt-1004",
+    "timestamp": "2026-07-11T01:47:44Z",
+    "index": "bank_ops",
+    "source": "/var/log/payment-api/app.log",
+    "sourcetype": "bank:payment_api",
+    "host": "pay-api-prod-03",
+    "service": "payment-api",
+    "environment": "prod",
+    "severity": "ERROR",
+    "incident_id": "INC10452",
+    "trace_id": "trc-pay-7721",
+    "message": "Circuit breaker opened for payment authorization dependency",
+    "fields": {
+      "dependency": "payments-ledger-prod",
+      "failure_rate_percent": 38.4,
+      "rolling_window_seconds": 60,
+      "error_code": "CIRCUIT_OPEN"
+    }
+  },
+  {
+    "event_id": "evt-1005",
+    "timestamp": "2026-07-11T01:49:27Z",
+    "index": "bank_ops",
+    "source": "/var/log/nginx/access.log",
+    "sourcetype": "nginx:access",
+    "host": "edge-gw-prod-01",
+    "service": "payment-api",
+    "environment": "prod",
+    "severity": "ERROR",
+    "incident_id": "INC10452",
+    "trace_id": "trc-pay-7728",
+    "message": "High gateway timeout rate for payment-api upstream",
+    "fields": {
+      "upstream": "payment-api",
+      "status_code": 504,
+      "request_count": 214,
+      "timeout_count": 63,
+      "region": "eu-west-1"
+    }
+  },
+  {
+    "event_id": "evt-1006",
+    "timestamp": "2026-07-11T01:53:12Z",
+    "index": "bank_ops",
+    "source": "/var/log/postgres/postgresql.log",
+    "sourcetype": "postgres:log",
+    "host": "payments-db-prod-01",
+    "service": "payments-ledger",
+    "environment": "prod",
+    "severity": "WARN",
+    "incident_id": "INC10452",
+    "trace_id": "db-pay-4012",
+    "message": "Long-running migration lock observed on payment_authorizations",
+    "fields": {
+      "database": "payments-ledger-prod",
+      "table": "payment_authorizations",
+      "lock_wait_seconds": 48,
+      "change_id": "CHG-8842"
+    }
+  },
+  {
+    "event_id": "evt-1007",
+    "timestamp": "2026-07-11T01:56:40Z",
+    "index": "bank_ops",
+    "source": "/var/log/payment-api/app.log",
+    "sourcetype": "bank:payment_api",
+    "host": "pay-api-prod-02",
+    "service": "payment-api",
+    "environment": "prod",
+    "severity": "ERROR",
+    "incident_id": "INC10452",
+    "trace_id": "trc-pay-7740",
+    "message": "Retry budget exhausted for payment authorization requests",
+    "fields": {
+      "endpoint": "/v1/payments/authorize",
+      "retry_count": 3,
+      "dropped_requests": 128,
+      "error_code": "RETRY_BUDGET_EXHAUSTED"
+    }
+  },
+  {
+    "event_id": "evt-1008",
+    "timestamp": "2026-07-11T02:04:31Z",
+    "index": "bank_ops",
+    "source": "/var/log/payment-api/app.log",
+    "sourcetype": "bank:payment_api",
+    "host": "pay-api-prod-01",
+    "service": "payment-api",
+    "environment": "prod",
+    "severity": "INFO",
+    "incident_id": "INC10452",
+    "trace_id": "trc-pay-7759",
+    "message": "Error rate reduced after connection pool limit increased by on-call engineer",
+    "fields": {
+      "endpoint": "/v1/payments/authorize",
+      "status_code": 200,
+      "latency_ms": 410,
+      "pool_max": 180
+    }
+  },
+  {
+    "event_id": "evt-2001",
+    "timestamp": "2026-07-10T23:18:09Z",
+    "index": "bank_ops",
+    "source": "/var/log/customer-portal/app.log",
+    "sourcetype": "bank:web_app",
+    "host": "portal-prod-01",
+    "service": "customer-portal",
+    "environment": "prod",
+    "severity": "WARN",
+    "incident_id": "INC10436",
+    "trace_id": "trc-web-2201",
+    "message": "Elevated login latency from identity service",
+    "fields": {
+      "endpoint": "/login",
+      "latency_ms": 1510,
+      "dependency": "identity-service"
+    }
+  },
+  {
+    "event_id": "evt-2002",
+    "timestamp": "2026-07-11T00:08:55Z",
+    "index": "bank_ops",
+    "source": "/var/log/atm-switch/transactions.log",
+    "sourcetype": "bank:atm_switch",
+    "host": "atm-switch-prod-02",
+    "service": "atm-switch",
+    "environment": "prod",
+    "severity": "INFO",
+    "incident_id": null,
+    "trace_id": "atm-01921",
+    "message": "ATM withdrawal authorization completed",
+    "fields": {
+      "status_code": 200,
+      "latency_ms": 132,
+      "region": "uk-south"
+    }
+  },
+  {
+    "event_id": "evt-3001",
+    "timestamp": "2026-07-11T07:15:22Z",
+    "index": "bank_ops",
+    "source": "/var/log/change-validator/app.log",
+    "sourcetype": "bank:change_validator",
+    "host": "ops-automation-01",
+    "service": "change-validator",
+    "environment": "prod",
+    "severity": "WARN",
+    "incident_id": null,
+    "trace_id": "chg-risk-8842",
+    "message": "CAB conflict detected: database migration overlaps payment-api peak settlement window",
+    "fields": {
+      "change_id": "CHG-8842",
+      "affected_service": "payment-api",
+      "risk_score": 86,
+      "window": "2026-07-11T01:30:00Z/2026-07-11T02:30:00Z"
+    }
+  },
+  {
+    "event_id": "evt-3002",
+    "timestamp": "2026-07-11T07:32:10Z",
+    "index": "bank_ops",
+    "source": "/var/log/change-validator/app.log",
+    "sourcetype": "bank:change_validator",
+    "host": "ops-automation-01",
+    "service": "change-validator",
+    "environment": "prod",
+    "severity": "INFO",
+    "incident_id": null,
+    "trace_id": "chg-risk-8851",
+    "message": "CAB validation completed for fraud-rules deployment",
+    "fields": {
+      "change_id": "CHG-8851",
+      "affected_service": "fraud-engine",
+      "risk_score": 32,
+      "window": "2026-07-11T21:00:00Z/2026-07-11T21:30:00Z"
+    }
+  }
+]
