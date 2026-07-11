@@ -1,0 +1,53 @@
+[
+  {
+    "id": "att-1001",
+    "type": "attachment",
+    "status": "current",
+    "title": "payment-api-incident-checklist.md",
+    "container_id": "conf-1001",
+    "mediaType": "text/markdown",
+    "fileSize": 18422,
+    "comment": "Checklist used during Payment API Sev-1 investigations.",
+    "version": {
+      "number": 2,
+      "when": "2026-06-18T10:16:00Z",
+      "by": {
+        "displayName": "Liam O'Connor"
+      }
+    }
+  },
+  {
+    "id": "att-1002",
+    "type": "attachment",
+    "status": "current",
+    "title": "payments-ledger-lock-wait-query.sql",
+    "container_id": "conf-1002",
+    "mediaType": "text/plain",
+    "fileSize": 6231,
+    "comment": "Diagnostic SQL used after INC09811.",
+    "version": {
+      "number": 1,
+      "when": "2026-05-22T16:42:00Z",
+      "by": {
+        "displayName": "Maya Singh"
+      }
+    }
+  },
+  {
+    "id": "att-3001",
+    "type": "attachment",
+    "status": "current",
+    "title": "cab-risk-score-template.xlsx",
+    "container_id": "conf-3001",
+    "mediaType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "fileSize": 42112,
+    "comment": "Template used to score operational risk for CAB changes.",
+    "version": {
+      "number": 4,
+      "when": "2026-06-25T12:35:00Z",
+      "by": {
+        "displayName": "Elena Martin"
+      }
+    }
+  }
+]

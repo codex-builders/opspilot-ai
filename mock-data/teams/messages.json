@@ -1,0 +1,252 @@
+[
+  {
+    "message_id": "msg-1001",
+    "conversation_id": "conv-major-incidents",
+    "team_id": "team-it-ops",
+    "channel_id": "channel-major-incidents",
+    "created_at": "2026-07-11T01:46:20Z",
+    "from": {
+      "user_id": "user-aisha-khan",
+      "display_name": "Aisha Khan"
+    },
+    "importance": "high",
+    "incident_id": "INC10452",
+    "service": "payment-api",
+    "message_type": "incident_update",
+    "body": "Declaring Sev-1 for Payment API authorization failures. Splunk shows 504s rising from 01:45 UTC.",
+    "mentions": [
+      "user-liam-oconnor",
+      "user-maya-singh"
+    ],
+    "tags": [
+      "sev1",
+      "payment-api",
+      "war-room"
+    ],
+    "reply_to_id": null
+  },
+  {
+    "message_id": "msg-1002",
+    "conversation_id": "conv-major-incidents",
+    "team_id": "team-it-ops",
+    "channel_id": "channel-major-incidents",
+    "created_at": "2026-07-11T01:48:05Z",
+    "from": {
+      "user_id": "user-liam-oconnor",
+      "display_name": "Liam O'Connor"
+    },
+    "importance": "high",
+    "incident_id": "INC10452",
+    "service": "payment-api",
+    "message_type": "technical_findings",
+    "body": "Payment API instances are healthy but waiting on payments-ledger-prod. Connection pool is maxed and retries are stacking.",
+    "mentions": [
+      "user-maya-singh"
+    ],
+    "tags": [
+      "payment-api",
+      "database",
+      "connection-pool"
+    ],
+    "reply_to_id": "msg-1001"
+  },
+  {
+    "message_id": "msg-1003",
+    "conversation_id": "conv-major-incidents",
+    "team_id": "team-it-ops",
+    "channel_id": "channel-major-incidents",
+    "created_at": "2026-07-11T01:52:44Z",
+    "from": {
+      "user_id": "user-maya-singh",
+      "display_name": "Maya Singh"
+    },
+    "importance": "high",
+    "incident_id": "INC10452",
+    "service": "payments-ledger",
+    "message_type": "technical_findings",
+    "body": "I see lock waits on payment_authorizations. Looks related to CHG-8842 migration running during settlement traffic.",
+    "mentions": [
+      "user-aisha-khan"
+    ],
+    "tags": [
+      "database",
+      "chg-8842",
+      "lock-wait"
+    ],
+    "reply_to_id": "msg-1002"
+  },
+  {
+    "message_id": "msg-1004",
+    "conversation_id": "conv-major-incidents",
+    "team_id": "team-it-ops",
+    "channel_id": "channel-major-incidents",
+    "created_at": "2026-07-11T01:58:30Z",
+    "from": {
+      "user_id": "user-aisha-khan",
+      "display_name": "Aisha Khan"
+    },
+    "importance": "high",
+    "incident_id": "INC10452",
+    "service": "payment-api",
+    "message_type": "action",
+    "body": "Action agreed: pause migration, increase payment API DB pool limit, keep rollback ready until error rate drops below 5 percent.",
+    "mentions": [
+      "user-liam-oconnor",
+      "user-maya-singh"
+    ],
+    "tags": [
+      "mitigation",
+      "rollback-ready",
+      "payment-api"
+    ],
+    "reply_to_id": "msg-1003"
+  },
+  {
+    "message_id": "msg-1005",
+    "conversation_id": "conv-major-incidents",
+    "team_id": "team-it-ops",
+    "channel_id": "channel-major-incidents",
+    "created_at": "2026-07-11T02:07:12Z",
+    "from": {
+      "user_id": "user-liam-oconnor",
+      "display_name": "Liam O'Connor"
+    },
+    "importance": "normal",
+    "incident_id": "INC10452",
+    "service": "payment-api",
+    "message_type": "incident_update",
+    "body": "Payment API 5xx rate is down to 6 percent and latency is recovering. Continuing to monitor settlement backlog.",
+    "mentions": [
+      "user-aisha-khan"
+    ],
+    "tags": [
+      "recovery",
+      "monitoring"
+    ],
+    "reply_to_id": "msg-1004"
+  },
+  {
+    "message_id": "msg-2001",
+    "conversation_id": "conv-shift-handover",
+    "team_id": "team-it-ops",
+    "channel_id": "channel-shift-handover",
+    "created_at": "2026-07-11T06:45:00Z",
+    "from": {
+      "user_id": "user-noah-brooks",
+      "display_name": "Noah Brooks"
+    },
+    "importance": "normal",
+    "incident_id": "INC10452",
+    "service": "payment-api",
+    "message_type": "handover",
+    "body": "Overnight handover: Payment API Sev-1 mitigated at 02:05 UTC. Monitor backlog, DB pool saturation, and customer refund queue.",
+    "mentions": [
+      "user-aisha-khan"
+    ],
+    "tags": [
+      "morning-briefing",
+      "handover",
+      "payment-api"
+    ],
+    "reply_to_id": null
+  },
+  {
+    "message_id": "msg-2002",
+    "conversation_id": "conv-shift-handover",
+    "team_id": "team-it-ops",
+    "channel_id": "channel-shift-handover",
+    "created_at": "2026-07-11T06:51:30Z",
+    "from": {
+      "user_id": "user-aisha-khan",
+      "display_name": "Aisha Khan"
+    },
+    "importance": "normal",
+    "incident_id": "INC10436",
+    "service": "customer-portal",
+    "message_type": "handover",
+    "body": "Customer portal login latency warning cleared before midnight. No customer-impacting incident opened.",
+    "mentions": [],
+    "tags": [
+      "morning-briefing",
+      "resolved",
+      "customer-portal"
+    ],
+    "reply_to_id": null
+  },
+  {
+    "message_id": "msg-3001",
+    "conversation_id": "conv-cab-review",
+    "team_id": "team-change-advisory-board",
+    "channel_id": "channel-cab-review",
+    "created_at": "2026-07-11T08:05:18Z",
+    "from": {
+      "user_id": "user-elena-martin",
+      "display_name": "Elena Martin"
+    },
+    "importance": "high",
+    "incident_id": null,
+    "service": "payment-api",
+    "message_type": "cab_review",
+    "body": "CAB note: CHG-8842 needs extra review after last night's Payment API incident. Time window overlaps settlement activity.",
+    "mentions": [
+      "user-sam-patel",
+      "user-maya-singh"
+    ],
+    "tags": [
+      "cab",
+      "chg-8842",
+      "risk"
+    ],
+    "reply_to_id": null
+  },
+  {
+    "message_id": "msg-3002",
+    "conversation_id": "conv-cab-review",
+    "team_id": "team-change-advisory-board",
+    "channel_id": "channel-cab-review",
+    "created_at": "2026-07-11T08:12:40Z",
+    "from": {
+      "user_id": "user-sam-patel",
+      "display_name": "Sam Patel"
+    },
+    "importance": "normal",
+    "incident_id": null,
+    "service": "fraud-engine",
+    "message_type": "cab_review",
+    "body": "CHG-8851 fraud-rules deployment has approvals and no dependency conflict. Recommend proceed in evening window.",
+    "mentions": [
+      "user-elena-martin"
+    ],
+    "tags": [
+      "cab",
+      "chg-8851",
+      "approved"
+    ],
+    "reply_to_id": null
+  },
+  {
+    "message_id": "msg-3003",
+    "conversation_id": "conv-cab-review",
+    "team_id": "team-change-advisory-board",
+    "channel_id": "channel-cab-review",
+    "created_at": "2026-07-11T08:17:22Z",
+    "from": {
+      "user_id": "user-maya-singh",
+      "display_name": "Maya Singh"
+    },
+    "importance": "high",
+    "incident_id": null,
+    "service": "payments-ledger",
+    "message_type": "cab_review",
+    "body": "Recommend moving CHG-8842 to a low-volume window and adding explicit rollback criteria for DB lock wait over 30 seconds.",
+    "mentions": [
+      "user-elena-martin"
+    ],
+    "tags": [
+      "cab",
+      "chg-8842",
+      "rollback"
+    ],
+    "reply_to_id": "msg-3001"
+  }
+]

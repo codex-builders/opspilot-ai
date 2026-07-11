@@ -1,0 +1,86 @@
+[
+  {
+    "team_id": "team-it-ops",
+    "display_name": "IT Operations",
+    "description": "Banking IT operations team responsible for production monitoring, incidents, and shift handovers.",
+    "channels": [
+      {
+        "channel_id": "channel-major-incidents",
+        "display_name": "Major Incidents",
+        "conversation_id": "conv-major-incidents",
+        "purpose": "Sev-1 and Sev-2 incident coordination"
+      },
+      {
+        "channel_id": "channel-shift-handover",
+        "display_name": "Shift Handover",
+        "conversation_id": "conv-shift-handover",
+        "purpose": "Operational handovers between support shifts"
+      }
+    ],
+    "members": [
+      {
+        "user_id": "user-aisha-khan",
+        "display_name": "Aisha Khan",
+        "role": "Incident Commander",
+        "email": "aisha.khan@examplebank.local"
+      },
+      {
+        "user_id": "user-liam-oconnor",
+        "display_name": "Liam O'Connor",
+        "role": "Payments SRE",
+        "email": "liam.oconnor@examplebank.local"
+      },
+      {
+        "user_id": "user-maya-singh",
+        "display_name": "Maya Singh",
+        "role": "Database Engineer",
+        "email": "maya.singh@examplebank.local"
+      },
+      {
+        "user_id": "user-noah-brooks",
+        "display_name": "Noah Brooks",
+        "role": "Operations Manager",
+        "email": "noah.brooks@examplebank.local"
+      }
+    ]
+  },
+  {
+    "team_id": "team-change-advisory-board",
+    "display_name": "Change Advisory Board",
+    "description": "CAB team reviewing planned production changes and operational risk.",
+    "channels": [
+      {
+        "channel_id": "channel-cab-review",
+        "display_name": "CAB Review",
+        "conversation_id": "conv-cab-review",
+        "purpose": "Daily review of planned changes, conflicts, and approvals"
+      }
+    ],
+    "members": [
+      {
+        "user_id": "user-noah-brooks",
+        "display_name": "Noah Brooks",
+        "role": "Operations Manager",
+        "email": "noah.brooks@examplebank.local"
+      },
+      {
+        "user_id": "user-elena-martin",
+        "display_name": "Elena Martin",
+        "role": "Change Manager",
+        "email": "elena.martin@examplebank.local"
+      },
+      {
+        "user_id": "user-sam-patel",
+        "display_name": "Sam Patel",
+        "role": "Release Manager",
+        "email": "sam.patel@examplebank.local"
+      },
+      {
+        "user_id": "user-maya-singh",
+        "display_name": "Maya Singh",
+        "role": "Database Engineer",
+        "email": "maya.singh@examplebank.local"
+      }
+    ]
+  }
+]

@@ -1,0 +1,346 @@
+[
+  {
+    "id": "conf-1001",
+    "type": "page",
+    "status": "current",
+    "title": "Payment API Authorization Failure Runbook",
+    "space": {
+      "key": "PAY",
+      "name": "Payments Platform"
+    },
+    "version": {
+      "number": 7,
+      "when": "2026-06-18T10:15:00Z",
+      "by": {
+        "displayName": "Liam O'Connor"
+      },
+      "message": "Added database pool saturation checks"
+    },
+    "labels": [
+      {
+        "prefix": "global",
+        "name": "runbook"
+      },
+      {
+        "prefix": "global",
+        "name": "payment-api"
+      },
+      {
+        "prefix": "global",
+        "name": "sev1"
+      }
+    ],
+    "metadata": {
+      "services": [
+        "payment-api",
+        "payments-ledger"
+      ],
+      "incident_ids": [
+        "INC10452"
+      ],
+      "change_ids": [
+        "CHG-8842"
+      ],
+      "scenario": [
+        "incident_investigation",
+        "morning_briefing"
+      ]
+    },
+    "summary": "Operational runbook for triaging Payment API authorization failures, 5xx spikes, database lock waits, and connection pool exhaustion.",
+    "body": {
+      "view": {
+        "representation": "view",
+        "value": "<h1>Payment API Authorization Failure Runbook</h1><p>Check Splunk for payment-api 5xx rate, p95 latency, DB_POOL_TIMEOUT, and CIRCUIT_OPEN events.</p><p>If database pool saturation is confirmed, pause related migrations, increase pool limits only within approved guardrails, and keep rollback ready until error rate remains below 5 percent for 15 minutes.</p>"
+      },
+      "storage": {
+        "representation": "storage",
+        "value": "<h1>Payment API Authorization Failure Runbook</h1><p>Check Splunk for payment-api 5xx rate, p95 latency, DB_POOL_TIMEOUT, and CIRCUIT_OPEN events.</p><p>If database pool saturation is confirmed, pause related migrations, increase pool limits only within approved guardrails, and keep rollback ready until error rate remains below 5 percent for 15 minutes.</p>"
+      }
+    }
+  },
+  {
+    "id": "conf-1002",
+    "type": "page",
+    "status": "current",
+    "title": "INC09811 Payment API Database Lock Wait Post Incident Review",
+    "space": {
+      "key": "OPS",
+      "name": "IT Operations Knowledge Base"
+    },
+    "version": {
+      "number": 3,
+      "when": "2026-05-22T16:40:00Z",
+      "by": {
+        "displayName": "Aisha Khan"
+      },
+      "message": "Added prevention actions"
+    },
+    "labels": [
+      {
+        "prefix": "global",
+        "name": "post-incident-review"
+      },
+      {
+        "prefix": "global",
+        "name": "payment-api"
+      },
+      {
+        "prefix": "global",
+        "name": "database-lock"
+      }
+    ],
+    "metadata": {
+      "services": [
+        "payment-api",
+        "payments-ledger"
+      ],
+      "incident_ids": [
+        "INC09811"
+      ],
+      "change_ids": [
+        "CHG-7719"
+      ],
+      "scenario": [
+        "incident_investigation"
+      ]
+    },
+    "summary": "Previous incident review for Payment API failures caused by a database migration lock during customer transaction volume.",
+    "body": {
+      "view": {
+        "representation": "view",
+        "value": "<h1>INC09811 Review</h1><p>Root cause was a schema migration holding locks on payment_authorizations during peak payment volume.</p><p>Recommended prevention: block migrations during settlement windows, pre-check lock wait thresholds, and define rollback criteria before approval.</p>"
+      },
+      "storage": {
+        "representation": "storage",
+        "value": "<h1>INC09811 Review</h1><p>Root cause was a schema migration holding locks on payment_authorizations during peak payment volume.</p><p>Recommended prevention: block migrations during settlement windows, pre-check lock wait thresholds, and define rollback criteria before approval.</p>"
+      }
+    }
+  },
+  {
+    "id": "conf-1003",
+    "type": "page",
+    "status": "current",
+    "title": "Payments Ledger Known Issue - Connection Pool Saturation",
+    "space": {
+      "key": "PAY",
+      "name": "Payments Platform"
+    },
+    "version": {
+      "number": 5,
+      "when": "2026-06-29T09:25:00Z",
+      "by": {
+        "displayName": "Maya Singh"
+      },
+      "message": "Updated mitigation limits"
+    },
+    "labels": [
+      {
+        "prefix": "global",
+        "name": "known-issue"
+      },
+      {
+        "prefix": "global",
+        "name": "payments-ledger"
+      },
+      {
+        "prefix": "global",
+        "name": "connection-pool"
+      }
+    ],
+    "metadata": {
+      "services": [
+        "payments-ledger",
+        "payment-api"
+      ],
+      "incident_ids": [
+        "INC10452",
+        "INC09811"
+      ],
+      "change_ids": [],
+      "scenario": [
+        "incident_investigation",
+        "morning_briefing"
+      ]
+    },
+    "summary": "Known issue describing how payments-ledger connection pool saturation appears in logs and what mitigations are permitted.",
+    "body": {
+      "view": {
+        "representation": "view",
+        "value": "<h1>Connection Pool Saturation</h1><p>Symptoms include DB_POOL_TIMEOUT, rising p95 latency, and payment-api circuit breaker events.</p><p>Temporary pool increases are permitted only after confirming database CPU remains below 70 percent and lock waits are falling.</p>"
+      },
+      "storage": {
+        "representation": "storage",
+        "value": "<h1>Connection Pool Saturation</h1><p>Symptoms include DB_POOL_TIMEOUT, rising p95 latency, and payment-api circuit breaker events.</p><p>Temporary pool increases are permitted only after confirming database CPU remains below 70 percent and lock waits are falling.</p>"
+      }
+    }
+  },
+  {
+    "id": "conf-2001",
+    "type": "page",
+    "status": "current",
+    "title": "Morning Operations Briefing Checklist",
+    "space": {
+      "key": "OPS",
+      "name": "IT Operations Knowledge Base"
+    },
+    "version": {
+      "number": 4,
+      "when": "2026-07-01T08:10:00Z",
+      "by": {
+        "displayName": "Noah Brooks"
+      },
+      "message": "Added unresolved incident section"
+    },
+    "labels": [
+      {
+        "prefix": "global",
+        "name": "morning-briefing"
+      },
+      {
+        "prefix": "global",
+        "name": "operations"
+      }
+    ],
+    "metadata": {
+      "services": [
+        "payment-api",
+        "customer-portal",
+        "atm-switch"
+      ],
+      "incident_ids": [
+        "INC10452",
+        "INC10436"
+      ],
+      "change_ids": [],
+      "scenario": [
+        "morning_briefing"
+      ]
+    },
+    "summary": "Checklist for overnight incident summary, unresolved risk, service health, and handover actions.",
+    "body": {
+      "view": {
+        "representation": "view",
+        "value": "<h1>Morning Operations Briefing Checklist</h1><ul><li>Summarise Sev-1 and Sev-2 incidents from the overnight window.</li><li>Call out mitigated incidents that still need monitoring.</li><li>Review Splunk alerts, Teams handover notes, and CAB risks for the day.</li></ul>"
+      },
+      "storage": {
+        "representation": "storage",
+        "value": "<h1>Morning Operations Briefing Checklist</h1><ul><li>Summarise Sev-1 and Sev-2 incidents from the overnight window.</li><li>Call out mitigated incidents that still need monitoring.</li><li>Review Splunk alerts, Teams handover notes, and CAB risks for the day.</li></ul>"
+      }
+    }
+  },
+  {
+    "id": "conf-3001",
+    "type": "page",
+    "status": "current",
+    "title": "CAB Risk Review Standard",
+    "space": {
+      "key": "CAB",
+      "name": "Change Advisory Board"
+    },
+    "version": {
+      "number": 6,
+      "when": "2026-06-25T12:30:00Z",
+      "by": {
+        "displayName": "Elena Martin"
+      },
+      "message": "Added payment settlement window rule"
+    },
+    "labels": [
+      {
+        "prefix": "global",
+        "name": "cab"
+      },
+      {
+        "prefix": "global",
+        "name": "change-risk"
+      },
+      {
+        "prefix": "global",
+        "name": "approval-policy"
+      }
+    ],
+    "metadata": {
+      "services": [
+        "payment-api",
+        "payments-ledger",
+        "fraud-engine"
+      ],
+      "incident_ids": [],
+      "change_ids": [
+        "CHG-8842",
+        "CHG-8851"
+      ],
+      "scenario": [
+        "cab_review"
+      ]
+    },
+    "summary": "CAB review standard for change conflicts, approval status, rollback criteria, and operational risk scoring.",
+    "body": {
+      "view": {
+        "representation": "view",
+        "value": "<h1>CAB Risk Review Standard</h1><p>High-risk changes require confirmed approvals, rollback criteria, and checks for overlapping incidents or settlement windows.</p><p>Database migrations touching payment_authorizations must not run during peak settlement activity unless explicitly approved by Payments SRE and Database Engineering.</p>"
+      },
+      "storage": {
+        "representation": "storage",
+        "value": "<h1>CAB Risk Review Standard</h1><p>High-risk changes require confirmed approvals, rollback criteria, and checks for overlapping incidents or settlement windows.</p><p>Database migrations touching payment_authorizations must not run during peak settlement activity unless explicitly approved by Payments SRE and Database Engineering.</p>"
+      }
+    }
+  },
+  {
+    "id": "conf-3002",
+    "type": "page",
+    "status": "current",
+    "title": "Payment Settlement Change Freeze Windows",
+    "space": {
+      "key": "CAB",
+      "name": "Change Advisory Board"
+    },
+    "version": {
+      "number": 2,
+      "when": "2026-06-10T14:05:00Z",
+      "by": {
+        "displayName": "Sam Patel"
+      },
+      "message": "Documented July settlement windows"
+    },
+    "labels": [
+      {
+        "prefix": "global",
+        "name": "cab"
+      },
+      {
+        "prefix": "global",
+        "name": "payment-api"
+      },
+      {
+        "prefix": "global",
+        "name": "change-freeze"
+      }
+    ],
+    "metadata": {
+      "services": [
+        "payment-api",
+        "payments-ledger"
+      ],
+      "incident_ids": [],
+      "change_ids": [
+        "CHG-8842"
+      ],
+      "scenario": [
+        "cab_review",
+        "morning_briefing"
+      ]
+    },
+    "summary": "Payment settlement windows that should be treated as restricted periods for database migrations and high-risk deployments.",
+    "body": {
+      "view": {
+        "representation": "view",
+        "value": "<h1>Payment Settlement Change Freeze Windows</h1><p>Restricted windows: 01:30-02:30 UTC and 16:00-17:30 UTC on business days.</p><p>CHG-8842 overlaps the 01:30-02:30 UTC settlement window and should be rescheduled or escalated for explicit CAB approval.</p>"
+      },
+      "storage": {
+        "representation": "storage",
+        "value": "<h1>Payment Settlement Change Freeze Windows</h1><p>Restricted windows: 01:30-02:30 UTC and 16:00-17:30 UTC on business days.</p><p>CHG-8842 overlaps the 01:30-02:30 UTC settlement window and should be rescheduled or escalated for explicit CAB approval.</p>"
+      }
+    }
+  }
+]
