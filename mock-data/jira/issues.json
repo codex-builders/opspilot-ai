@@ -1,0 +1,202 @@
+[
+  {
+    "id": "40521",
+    "key": "OPS-4521",
+    "self": "https://opspilot.atlassian.net/rest/api/3/issue/40521",
+    "fields": {
+      "summary": "Deploy payment-api v2.3.1",
+      "issuetype": {"name": "Change"},
+      "status": {"name": "Done", "statusCategory": {"key": "done"}},
+      "priority": {"name": "Medium"},
+      "created": "2026-07-10T13:40:00.000+0000",
+      "updated": "2026-07-10T13:50:00.000+0000",
+      "description": "Rolling deploy of payment-api v2.3.1 introducing new retry logic for downstream card processor calls.",
+      "customfield_10050": "payment-api-prod",
+      "customfield_10051": "2026-07-10T13:50:00.000+0000",
+      "customfield_10052": "Approved",
+      "customfield_10053": "2026-07-10T13:30:00.000+0000",
+      "customfield_10054": "2026-07-10T14:00:00.000+0000",
+      "customfield_10055": "a1b2c3d"
+    }
+  },
+  {
+    "id": "40522",
+    "key": "OPS-4522",
+    "self": "https://opspilot.atlassian.net/rest/api/3/issue/40522",
+    "fields": {
+      "summary": "Update payment-api DB connection pool size",
+      "issuetype": {"name": "Change"},
+      "status": {"name": "Done", "statusCategory": {"key": "done"}},
+      "priority": {"name": "Low"},
+      "created": "2026-07-10T13:55:00.000+0000",
+      "updated": "2026-07-10T14:05:00.000+0000",
+      "description": "Increased max connection pool from 20 to 50 to handle peak load.",
+      "customfield_10050": "payment-api-prod",
+      "customfield_10051": "2026-07-10T14:05:00.000+0000",
+      "customfield_10052": "Approved",
+      "customfield_10053": "2026-07-10T14:00:00.000+0000",
+      "customfield_10054": "2026-07-10T14:30:00.000+0000",
+      "customfield_10055": "e4f5g6h"
+    }
+  },
+  {
+    "id": "40498",
+    "key": "OPS-4498",
+    "self": "https://opspilot.atlassian.net/rest/api/3/issue/40498",
+    "fields": {
+      "summary": "Rotate TLS certificate for auth-gateway",
+      "issuetype": {"name": "Change"},
+      "status": {"name": "Done", "statusCategory": {"key": "done"}},
+      "priority": {"name": "Medium"},
+      "created": "2026-07-09T09:45:00.000+0000",
+      "updated": "2026-07-09T10:30:00.000+0000",
+      "description": "Scheduled certificate rotation, part of quarterly maintenance.",
+      "customfield_10050": "auth-gateway-prod",
+      "customfield_10051": "2026-07-09T10:30:00.000+0000",
+      "customfield_10052": "Approved",
+      "customfield_10053": "2026-07-09T10:00:00.000+0000",
+      "customfield_10054": "2026-07-09T11:00:00.000+0000",
+      "customfield_10055": "x9y8z7w"
+    }
+  },
+  {
+    "id": "40530",
+    "key": "OPS-4530",
+    "self": "https://opspilot.atlassian.net/rest/api/3/issue/40530",
+    "fields": {
+      "summary": "Search index re-sharding",
+      "issuetype": {"name": "Change"},
+      "status": {"name": "In Progress", "statusCategory": {"key": "indeterminate"}},
+      "priority": {"name": "High"},
+      "created": "2026-07-11T06:30:00.000+0000",
+      "updated": "2026-07-11T07:45:00.000+0000",
+      "description": "Re-sharding search index cluster from 4 to 8 shards to improve query throughput.",
+      "customfield_10050": "search-svc-prod",
+      "customfield_10051": "2026-07-11T07:45:00.000+0000",
+      "customfield_10052": "Approved",
+      "customfield_10053": "2026-07-11T07:00:00.000+0000",
+      "customfield_10054": "2026-07-11T10:00:00.000+0000",
+      "customfield_10055": "m3n4o5p"
+    }
+  },
+  {
+    "id": "40510",
+    "key": "OPS-4510",
+    "self": "https://opspilot.atlassian.net/rest/api/3/issue/40510",
+    "fields": {
+      "summary": "Fix flaky unit test in finance-batch",
+      "issuetype": {"name": "Bug"},
+      "status": {"name": "Done", "statusCategory": {"key": "done"}},
+      "priority": {"name": "Low"},
+      "created": "2026-07-07T15:30:00.000+0000",
+      "updated": "2026-07-07T16:00:00.000+0000",
+      "description": "Fixed intermittent test failure unrelated to production behavior.",
+      "customfield_10050": "finance-batch-prod",
+      "customfield_10051": "2026-07-07T16:00:00.000+0000",
+      "customfield_10052": "Approved",
+      "customfield_10053": "2026-07-07T16:00:00.000+0000",
+      "customfield_10054": "2026-07-07T16:15:00.000+0000",
+      "customfield_10055": "q1r2s3t"
+    }
+  },
+  {
+    "id": "40535",
+    "key": "OPS-4535",
+    "self": "https://opspilot.atlassian.net/rest/api/3/issue/40535",
+    "fields": {
+      "summary": "Update logging library version across services",
+      "issuetype": {"name": "Change"},
+      "status": {"name": "Done", "statusCategory": {"key": "done"}},
+      "priority": {"name": "Low"},
+      "created": "2026-07-06T08:30:00.000+0000",
+      "updated": "2026-07-06T09:00:00.000+0000",
+      "description": "Bumped shared logging library to patch a memory leak in log buffering.",
+      "customfield_10050": "shared-infra",
+      "customfield_10051": "2026-07-06T09:00:00.000+0000",
+      "customfield_10052": "Approved",
+      "customfield_10053": "2026-07-06T09:00:00.000+0000",
+      "customfield_10054": "2026-07-06T09:30:00.000+0000",
+      "customfield_10055": "u4v5w6x"
+    }
+  },
+  {
+    "id": "40540",
+    "key": "OPS-4540",
+    "self": "https://opspilot.atlassian.net/rest/api/3/issue/40540",
+    "fields": {
+      "summary": "Increase autoscaling max replicas for payment-api",
+      "issuetype": {"name": "Change"},
+      "status": {"name": "Scheduled", "statusCategory": {"key": "new"}},
+      "priority": {"name": "Low"},
+      "created": "2026-07-11T09:00:00.000+0000",
+      "updated": "2026-07-11T09:00:00.000+0000",
+      "description": "Planned change to raise max replica count ahead of upcoming sale event. Not yet deployed.",
+      "customfield_10050": "payment-api-prod",
+      "customfield_10051": null,
+      "customfield_10052": "Approved",
+      "customfield_10053": "2026-07-12T02:00:00.000+0000",
+      "customfield_10054": "2026-07-12T03:00:00.000+0000",
+      "customfield_10055": null
+    }
+  },
+  {
+    "id": "40515",
+    "key": "OPS-4515",
+    "self": "https://opspilot.atlassian.net/rest/api/3/issue/40515",
+    "fields": {
+      "summary": "Patch SSO redirect handler",
+      "issuetype": {"name": "Change"},
+      "status": {"name": "Done", "statusCategory": {"key": "done"}},
+      "priority": {"name": "Medium"},
+      "created": "2026-07-09T08:30:00.000+0000",
+      "updated": "2026-07-09T09:00:00.000+0000",
+      "description": "Fixed redirect URI validation bug causing session mismatch for SSO users.",
+      "customfield_10050": "auth-gateway-prod",
+      "customfield_10051": "2026-07-09T09:00:00.000+0000",
+      "customfield_10052": "Approved",
+      "customfield_10053": "2026-07-09T09:00:00.000+0000",
+      "customfield_10054": "2026-07-09T09:15:00.000+0000",
+      "customfield_10055": "b7c8d9e"
+    }
+  },
+  {
+    "id": "40545",
+    "key": "OPS-4545",
+    "self": "https://opspilot.atlassian.net/rest/api/3/issue/40545",
+    "fields": {
+      "summary": "Database schema migration for payment-api billing tables",
+      "issuetype": {"name": "Change"},
+      "status": {"name": "Scheduled", "statusCategory": {"key": "new"}},
+      "priority": {"name": "High"},
+      "created": "2026-07-11T09:30:00.000+0000",
+      "updated": "2026-07-11T09:30:00.000+0000",
+      "description": "Schema migration adding new billing reconciliation columns. Requires brief write-lock on payment-api DB.",
+      "customfield_10050": "payment-api-prod",
+      "customfield_10051": null,
+      "customfield_10052": "Pending Approval",
+      "customfield_10053": "2026-07-12T02:30:00.000+0000",
+      "customfield_10054": "2026-07-12T04:00:00.000+0000",
+      "customfield_10055": null
+    }
+  },
+  {
+    "id": "40550",
+    "key": "OPS-4550",
+    "self": "https://opspilot.atlassian.net/rest/api/3/issue/40550",
+    "fields": {
+      "summary": "Rotate credentials for search-svc service account",
+      "issuetype": {"name": "Change"},
+      "status": {"name": "Scheduled", "statusCategory": {"key": "new"}},
+      "priority": {"name": "Low"},
+      "created": "2026-07-11T10:00:00.000+0000",
+      "updated": "2026-07-11T10:00:00.000+0000",
+      "description": "Routine credential rotation, no expected downtime.",
+      "customfield_10050": "search-svc-prod",
+      "customfield_10051": null,
+      "customfield_10052": "Approved",
+      "customfield_10053": "2026-07-13T01:00:00.000+0000",
+      "customfield_10054": "2026-07-13T01:30:00.000+0000",
+      "customfield_10055": null
+    }
+  }
+]
