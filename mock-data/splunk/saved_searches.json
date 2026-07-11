@@ -1,0 +1,29 @@
+[
+  {
+    "name": "Payment API incident errors",
+    "description": "Errors and warnings for the active payment API Sev-1 incident.",
+    "search": "search index=bank_ops service=payment-api incident_id=INC10452 severity=ERROR",
+    "earliest_time": "2026-07-11T01:40:00Z",
+    "latest_time": "2026-07-11T02:10:00Z",
+    "owner": "ops",
+    "app": "search"
+  },
+  {
+    "name": "Overnight operational alerts",
+    "description": "Fired alerts used by the morning operations briefing.",
+    "search": "search index=bank_ops earliest=-12h severity>=WARN",
+    "earliest_time": "2026-07-10T20:00:00Z",
+    "latest_time": "2026-07-11T08:00:00Z",
+    "owner": "ops",
+    "app": "search"
+  },
+  {
+    "name": "CAB risk indicators",
+    "description": "Change validation warnings and operational risk markers.",
+    "search": "search index=bank_ops service=change-validator",
+    "earliest_time": "2026-07-11T00:00:00Z",
+    "latest_time": "2026-07-12T00:00:00Z",
+    "owner": "change-management",
+    "app": "search"
+  }
+]

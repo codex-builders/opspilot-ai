@@ -1,0 +1,82 @@
+[
+  {
+    "metric_id": "metric-5001",
+    "timestamp": "2026-07-11T01:40:00Z",
+    "service": "payment-api",
+    "metric_name": "http_5xx_rate_percent",
+    "value": 2.1,
+    "unit": "percent",
+    "host": "pay-api-prod-aggregate",
+    "environment": "prod"
+  },
+  {
+    "metric_id": "metric-5002",
+    "timestamp": "2026-07-11T01:45:00Z",
+    "service": "payment-api",
+    "metric_name": "http_5xx_rate_percent",
+    "value": 18.7,
+    "unit": "percent",
+    "host": "pay-api-prod-aggregate",
+    "environment": "prod"
+  },
+  {
+    "metric_id": "metric-5003",
+    "timestamp": "2026-07-11T01:50:00Z",
+    "service": "payment-api",
+    "metric_name": "http_5xx_rate_percent",
+    "value": 31.6,
+    "unit": "percent",
+    "host": "pay-api-prod-aggregate",
+    "environment": "prod"
+  },
+  {
+    "metric_id": "metric-5004",
+    "timestamp": "2026-07-11T02:05:00Z",
+    "service": "payment-api",
+    "metric_name": "http_5xx_rate_percent",
+    "value": 6.2,
+    "unit": "percent",
+    "host": "pay-api-prod-aggregate",
+    "environment": "prod"
+  },
+  {
+    "metric_id": "metric-5005",
+    "timestamp": "2026-07-11T01:45:00Z",
+    "service": "payment-api",
+    "metric_name": "p95_latency_ms",
+    "value": 3420,
+    "unit": "milliseconds",
+    "host": "pay-api-prod-aggregate",
+    "environment": "prod"
+  },
+  {
+    "metric_id": "metric-5006",
+    "timestamp": "2026-07-11T01:50:00Z",
+    "service": "payment-api",
+    "metric_name": "p95_latency_ms",
+    "value": 5810,
+    "unit": "milliseconds",
+    "host": "pay-api-prod-aggregate",
+    "environment": "prod"
+  },
+  {
+    "metric_id": "metric-5007",
+    "timestamp": "2026-07-11T01:55:00Z",
+    "service": "payments-ledger",
+    "metric_name": "db_connection_pool_active",
+    "value": 119,
+    "unit": "connections",
+    "host": "payments-db-prod-01",
+    "environment": "prod"
+  },
+  {
+    "metric_id": "metric-5008",
+    "timestamp": "2026-07-11T07:15:00Z",
+    "service": "change-validator",
+    "metric_name": "cab_risk_score",
+    "value": 86,
+    "unit": "score",
+    "host": "ops-automation-01",
+    "environment": "prod"
+  }
+]

@@ -1,0 +1,72 @@
+[
+  {
+    "alert_id": "alert-9001",
+    "savedsearch_name": "Payment API 5xx spike",
+    "sid": "scheduler__ops__search__payment_api_5xx_spike_at_20260711_0148",
+    "trigger_time": "2026-07-11T01:48:00Z",
+    "severity": 5,
+    "severity_label": "critical",
+    "service": "payment-api",
+    "incident_id": "INC10452",
+    "description": "5xx responses exceeded 20 percent for payment authorization traffic.",
+    "triggered_alerts": 1,
+    "result_count": 4,
+    "status": "fired"
+  },
+  {
+    "alert_id": "alert-9002",
+    "savedsearch_name": "Payment API latency p95 breach",
+    "sid": "scheduler__ops__search__payment_api_latency_p95_at_20260711_0146",
+    "trigger_time": "2026-07-11T01:46:30Z",
+    "severity": 4,
+    "severity_label": "high",
+    "service": "payment-api",
+    "incident_id": "INC10452",
+    "description": "Payment API p95 latency stayed above 3000 ms for two consecutive checks.",
+    "triggered_alerts": 1,
+    "result_count": 3,
+    "status": "fired"
+  },
+  {
+    "alert_id": "alert-9003",
+    "savedsearch_name": "Database lock wait warning",
+    "sid": "scheduler__ops__search__db_lock_wait_at_20260711_0153",
+    "trigger_time": "2026-07-11T01:53:30Z",
+    "severity": 3,
+    "severity_label": "medium",
+    "service": "payments-ledger",
+    "incident_id": "INC10452",
+    "description": "Lock waits exceeded 30 seconds on payment_authorizations.",
+    "triggered_alerts": 1,
+    "result_count": 1,
+    "status": "fired"
+  },
+  {
+    "alert_id": "alert-9004",
+    "savedsearch_name": "Customer portal login latency",
+    "sid": "scheduler__ops__search__portal_login_latency_at_20260710_2319",
+    "trigger_time": "2026-07-10T23:19:00Z",
+    "severity": 2,
+    "severity_label": "low",
+    "service": "customer-portal",
+    "incident_id": "INC10436",
+    "description": "Login latency crossed warning threshold during overnight window.",
+    "triggered_alerts": 1,
+    "result_count": 1,
+    "status": "fired"
+  },
+  {
+    "alert_id": "alert-9005",
+    "savedsearch_name": "CAB high risk window conflict",
+    "sid": "scheduler__ops__search__cab_window_conflict_at_20260711_0716",
+    "trigger_time": "2026-07-11T07:16:00Z",
+    "severity": 4,
+    "severity_label": "high",
+    "service": "change-validator",
+    "incident_id": null,
+    "description": "A planned change overlaps with a payment settlement risk window.",
+    "triggered_alerts": 1,
+    "result_count": 1,
+    "status": "fired"
+  }
+]
