@@ -74,6 +74,11 @@ def _load_issues() -> list[dict[str, Any]]:
         return json.load(file)
 
 
+def list_issues() -> list[dict[str, Any]]:
+    """Return the synthetic Jira issues used by the demo orchestrator."""
+    return _load_issues()
+
+
 def _issue_not_found() -> dict[str, Any]:
     raise HTTPException(status_code=404, detail="Issue does not exist or you do not have permission to see it.")
 
