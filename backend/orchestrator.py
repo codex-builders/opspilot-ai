@@ -1,5 +1,6 @@
 """Business workflow for evidence gathering, triage, runbook ranking, and reporting."""
 
+from backend import ai_orchestrator
 from backend import connectors
 
 
@@ -58,25 +59,59 @@ def triage(incident_id: str) -> dict | None:
         service_now_summary = service_now_incidents[0]
         evidence.append(f"ServiceNow reports {service_now_summary['id']} as {service_now_summary['state']} with {service_now_summary['summary']}.")
     likely_cause = f"Possible {logs[0]['message']} associated with the recent deployment; this is a hypothesis, not a confirmed root cause."
-    return {
+    timeline = _timeline(incident, deployments, logs)
+    local_recommended_actions = [
+        step
+        for runbook in runbooks
+        for step in runbook.get("steps", [])
+    ][:4]
+    ai_context = {
         "incident": incident,
-        "summary": f"{incident['title']} requires immediate investigation in {incident['environment']}.",
-        "impact": incident["description"],
-        "evidence": evidence,
-        "likely_cause": likely_cause,
-        "raw_context": {"logs": logs, "recent_deployments": deployments, "similar_incidents": similar},
-        "recommended_runbooks": runbooks,
+        "service_now_incidents": service_now_incidents,
+        "splunk_logs": logs,
+        "jira_deployments": deployments,
+        "jira_change_activity": jira_changes,
+        "similar_confluence_incidents": similar,
+        "recommended_confluence_runbooks": runbooks,
         "routing": routing,
-        "teams_status_update": (
+        "timeline": timeline,
+        "local_evidence": evidence,
+        "local_likely_cause": likely_cause,
+        "local_recommended_actions": local_recommended_actions,
+    }
+    ai_analysis = ai_orchestrator.analyze_incident(ai_context)
+    ai_completed = ai_analysis.get("status") == "completed"
+    recommended_actions = ai_analysis.get("recommended_actions") if ai_completed else local_recommended_actions
+    if not recommended_actions:
+        recommended_actions = ["Continue evidence collection and validate recovery with the incident commander."]
+    teams_status_update = (
+        ai_analysis.get("teams_status_update")
+        if ai_completed and ai_analysis.get("teams_status_update")
+        else (
             f"{incident['severity']} {incident['id']}: {incident['title']}. "
             f"Evidence indicates {logs[0]['message']} after a recent deployment. "
             f"Primary: {routing['primary_team']}; support requested from {', '.join(routing['support_teams'])}. "
             "Runbook recommendation is ready for Incident Commander review."
-        ),
+        )
+    )
+    return {
+        "incident": incident,
+        "summary": ai_analysis.get("summary") if ai_completed else f"{incident['title']} requires immediate investigation in {incident['environment']}.",
+        "impact": incident["description"],
+        "evidence": ai_analysis.get("evidence") if ai_completed and ai_analysis.get("evidence") else evidence,
+        "likely_cause": ai_analysis.get("likely_cause") if ai_completed else likely_cause,
+        "confidence": ai_analysis.get("confidence", "MEDIUM" if ai_completed else "LOW"),
+        "reasoning_summary": ai_analysis.get("reasoning_summary", "Local deterministic analysis used."),
+        "recommended_actions": recommended_actions,
+        "ai_analysis": ai_analysis,
+        "raw_context": {"logs": logs, "recent_deployments": deployments, "similar_incidents": similar},
+        "recommended_runbooks": runbooks,
+        "routing": routing,
+        "teams_status_update": teams_status_update,
         "jira_tasks": jira_tasks,
         "service_now_incidents": service_now_incidents,
         "jira_change_activity": jira_changes,
-        "timeline": _timeline(incident, deployments, logs),
+        "timeline": timeline,
     }
 
 

@@ -20,6 +20,18 @@ except (ImportError, OSError):
     # Keep the orchestrator usable while the Splunk mock is unavailable.
     search_events = None
 
+try:
+    from api.mock_teams import search_messages as search_teams_messages
+except (ImportError, OSError):
+    search_teams_messages = None
+
+try:
+    from api.mock_confluence import find_historical_incidents
+    from api.mock_confluence import find_runbooks as find_confluence_runbooks
+except (ImportError, OSError):
+    find_historical_incidents = None
+    find_confluence_runbooks = None
+
 
 INCIDENTS = {
     "INC-1001": {
@@ -83,6 +95,9 @@ INCIDENTS = {
 # Splunk records. Keep that translation at the connector boundary.
 SPLUNK_SERVICE_NAMES = {"Payments API": "payment-api"}
 SPLUNK_INCIDENT_IDS = {"INC-1001": "INC10452"}
+
+CONFLUENCE_SERVICE_NAMES = {"Payments API": "payment-api"}
+CONFLUENCE_INCIDENT_IDS = {"INC-1001": "INC10452"}
 
 SERVICE_TO_CMDB_CI = {
     "Payments API": "payment-api-prod",
@@ -272,7 +287,19 @@ def get_overnight_incidents() -> list[dict]:
 
 
 def get_overnight_teams_messages() -> list[dict]:
-    """Fixture replacement point for Teams incident/status messages."""
+    """Return normalized Teams handover/status messages for the morning briefing."""
+    if search_teams_messages:
+        messages = search_teams_messages(tag="morning-briefing", limit=20)
+        if messages:
+            return [
+                {
+                    "time": message["created_at"],
+                    "team": message.get("service", "Operations"),
+                    "message": message["body"],
+                }
+                for message in messages
+            ]
+
     return [
         {"time": "2026-07-11T06:10:00Z", "team": "Commerce Platform", "message": "Checkout Gateway error rate remains elevated at 2.4%; on-call investigating upstream dependency."},
         {"time": "2026-07-11T06:35:00Z", "team": "Identity Engineering", "message": "Certificate renewal change is planned for 09:00 UTC and requires verification."},
@@ -355,11 +382,65 @@ def get_existing_jira_tasks(incident_id: str) -> list[dict]:
 
 
 def get_similar_incidents(service: str) -> list[dict]:
+    if find_historical_incidents:
+        confluence_service = CONFLUENCE_SERVICE_NAMES.get(service, service)
+        payload = find_historical_incidents(service=confluence_service)
+        results = payload.get("results", []) if isinstance(payload, dict) else []
+        if results:
+            return [
+                {
+                    "id": item["id"],
+                    "title": item["title"],
+                    "resolution": item.get("summary", "Review the historical incident page for resolution details."),
+                }
+                for item in results
+            ]
+
     incident_id, title, resolution = SERVICE_DATA[service]["similar"]
     return [{"id": incident_id, "title": title, "resolution": resolution}]
 
 
 def get_runbooks(service: str) -> list[dict]:
+    if find_confluence_runbooks:
+        confluence_service = CONFLUENCE_SERVICE_NAMES.get(service, service)
+        confluence_incident_id = None
+        for local_incident_id, external_incident_id in CONFLUENCE_INCIDENT_IDS.items():
+            if INCIDENTS[local_incident_id]["service"] == service:
+                confluence_incident_id = external_incident_id
+                break
+        payload = find_confluence_runbooks(service=confluence_service, incident_id=confluence_incident_id)
+        results = payload.get("results", []) if isinstance(payload, dict) else []
+        if results:
+            runbooks = []
+            for item in results:
+                label_names = [
+                    label.get("name", "")
+                    for label in item.get("metadata", {}).get("labels", {}).get("results", [])
+                ]
+                body = item.get("body", {}).get("view", {}).get("value", "")
+                summary = item.get("summary", "")
+                symptoms = [
+                    label.replace("-", " ")
+                    for label in label_names
+                    if label not in {"runbook", "known-issue", "sev1"}
+                ]
+                symptoms.extend(["connection pool", "database timeout", "circuit breaker", "lock wait"])
+                runbooks.append(
+                    {
+                        "title": item["title"],
+                        "url": item.get("_links", {}).get("self", f"https://confluence.example/content/{item['id']}"),
+                        "symptoms": symptoms,
+                        "steps": [
+                            summary,
+                            "Review the Confluence page for the approved mitigation procedure.",
+                            "Validate recovery signals before resolving the incident.",
+                        ],
+                        "risk": "High" if "sev1" in label_names else "Medium",
+                        "source_body": body,
+                    }
+                )
+            return runbooks
+
     return [
         {
             "title": title,

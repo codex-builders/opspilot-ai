@@ -29,9 +29,22 @@ export function App() {
   const [cabBriefOpen, setCabBriefOpen] = useState(false);
   const [toast, setToast] = useState("");
   const [data, setData] = useState<OperationsDashboardData | null>(null);
+  const [loadError, setLoadError] = useState("");
 
   useEffect(() => {
-    operationsApi.getDashboardData().then(setData);
+    operationsApi
+      .getDashboardData()
+      .then((dashboardData) => {
+        setData(dashboardData);
+        setLoadError("");
+      })
+      .catch((error: unknown) => {
+        setLoadError(
+          error instanceof Error
+            ? error.message
+            : "Unable to load dashboard data from the backend."
+        );
+      });
   }, []);
 
   useEffect(() => {
@@ -61,6 +74,18 @@ export function App() {
     const timeout = window.setTimeout(() => setToast(""), 4200);
     return () => window.clearTimeout(timeout);
   }, [toast]);
+
+  if (loadError) {
+    return (
+      <div className="loading-screen">
+        <div className="panel">
+          <p className="eyebrow">Operations Command Centre</p>
+          <h1>Backend connection required</h1>
+          <p>{loadError}</p>
+        </div>
+      </div>
+    );
+  }
 
   if (!data) {
     return (
@@ -667,6 +692,36 @@ function InvestigationResult({
 
       <section className="split-grid equal">
         <div className="panel">
+          <div className="panel-header">
+            <div>
+              <p className="eyebrow">AI Reasoning Summary</p>
+              <h2>{result.aiModel}</h2>
+            </div>
+            <StatusBadge
+              label={result.aiStatus === "completed" ? "OpenAI" : result.aiStatus}
+              tone={result.aiStatus === "completed" ? "success" : result.aiStatus === "error" ? "critical" : "warning"}
+            />
+          </div>
+          <p>{result.reasoningSummary}</p>
+          <StatusBadge label={`Confidence ${result.confidence}`} tone={confidenceTone(result.confidence)} />
+        </div>
+        <div className="panel">
+          <p className="eyebrow">Evidence Trace</p>
+          <ul className="check-list">
+            {(result.sourceTrace.length > 0
+              ? result.sourceTrace
+              : result.evidence.map((item) => ({ source: "Splunk" as const, detail: item }))
+            ).map((item) => (
+              <li key={`${item.source}-${item.detail}`}>
+                <strong>{item.source}:</strong> {item.detail}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      <section className="split-grid equal">
+        <div className="panel">
           <p className="eyebrow">Recommended Actions</p>
           <ol className="number-list">
             {result.recommendations.map((item) => (
@@ -1180,6 +1235,10 @@ function StatusBadge({
 
 function severityTone(severity: IncidentSummary["severity"]) {
   return severity === "SEV-1" ? "critical" : severity === "SEV-2" ? "warning" : "neutral";
+}
+
+function confidenceTone(confidence: "HIGH" | "MEDIUM" | "LOW") {
+  return confidence === "HIGH" ? "success" : confidence === "MEDIUM" ? "warning" : "neutral";
 }
 
 function riskTone(risk: CabChange["risk"]) {

@@ -4,6 +4,7 @@ export type SystemName =
   | "Jira"
   | "Confluence"
   | "Teams"
+  | "OpenAI"
   | "Azure Monitor";
 
 export type HttpMethod = "GET" | "POST";
@@ -44,6 +45,13 @@ export type InvestigationStep = {
 
 export type InvestigationResult = {
   confidence: "HIGH" | "MEDIUM" | "LOW";
+  aiStatus: "completed" | "disabled" | "error";
+  aiModel: string;
+  reasoningSummary: string;
+  sourceTrace: Array<{
+    source: SystemName;
+    detail: string;
+  }>;
   probableRootCause: string;
   explanation: string;
   evidence: string[];
