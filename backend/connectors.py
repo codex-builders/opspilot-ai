@@ -32,6 +32,7 @@ INCIDENTS = {
         "region": "EU",
         "started_at": "2026-07-11T01:45:00Z",
         "assignment_group": "Payments Platform",
+        "status": "ACTIVE",
     },
     "INC-1002": {
         "id": "INC-1002",
@@ -43,6 +44,7 @@ INCIDENTS = {
         "region": "EU",
         "started_at": "2026-07-11T11:05:00Z",
         "assignment_group": "Order Platform",
+        "status": "RESOLVED",
     },
     "INC-1003": {
         "id": "INC-1003",
@@ -54,6 +56,7 @@ INCIDENTS = {
         "region": "US",
         "started_at": "2026-07-11T11:22:00Z",
         "assignment_group": "Commerce Platform",
+        "status": "ACTIVE",
     },
     "INC-1004": {
         "id": "INC-1004",
@@ -65,6 +68,7 @@ INCIDENTS = {
         "region": "Global",
         "started_at": "2026-07-11T11:40:00Z",
         "assignment_group": "Identity Engineering",
+        "status": "RESOLVED",
     },
     "INC-1005": {
         "id": "INC-1005",
@@ -76,6 +80,7 @@ INCIDENTS = {
         "region": "EU",
         "started_at": "2026-07-11T12:00:00Z",
         "assignment_group": "Cloud Infrastructure",
+        "status": "ACTIVE",
     },
 }
 
@@ -303,6 +308,10 @@ def get_scheduled_changes() -> list[dict]:
 
 def get_incident(incident_id: str) -> dict | None:
     return deepcopy(INCIDENTS.get(incident_id))
+
+
+def list_demo_incidents() -> list[dict]:
+    return deepcopy(list(INCIDENTS.values()))
 
 
 def get_splunk_logs(service: str, started_at: str, incident_id: str | None = None) -> list[dict]:

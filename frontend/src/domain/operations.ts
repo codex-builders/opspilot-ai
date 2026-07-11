@@ -139,7 +139,7 @@ export type OperationsDashboardData = {
   investigation: {
     steps: InvestigationStep[];
     activityFeed: string[];
-    result: InvestigationResult;
+    result: InvestigationResult | null;
   };
   briefingSources: SystemName[];
   briefingCollection: OperationsMetric[];

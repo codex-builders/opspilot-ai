@@ -2,14 +2,16 @@ import { useEffect, useMemo, useState } from "react";
 import type {
   CabChange,
   IncidentSummary,
+  InvestigationResult as InvestigationResultData,
   OperationsDashboardData,
   TrendSeries
 } from "./domain/operations";
 import { operationsApi } from "./services/operationsApi";
 
 type Page = "overview" | "incidents" | "cab";
-type InvestigationState = "ready" | "running" | "complete";
-type CabState = "ready" | "analysed";
+type InvestigationState = "ready" | "running" | "complete" | "error";
+type CabState = "ready" | "loading" | "analysed" | "error";
+type ApprovalState = "pending" | "approved" | "rejected";
 type IncidentStatusFilter = "ALL" | "ACTIVE" | "RESOLVED";
 type TrendFilter = "ALL" | "SEV-1" | "SEV-2" | "SEV-3";
 
@@ -21,17 +23,36 @@ const pageLabels: Record<Page, string> = {
 
 export function App() {
   const [page, setPage] = useState<Page>("overview");
-  const [selectedIncidentId, setSelectedIncidentId] = useState("INC-1042");
+  const [selectedIncidentId, setSelectedIncidentId] = useState("INC-1001");
   const [investigationState, setInvestigationState] =
     useState<InvestigationState>("ready");
+  const [investigationResult, setInvestigationResult] =
+    useState<InvestigationResultData | null>(null);
+  const [investigationError, setInvestigationError] = useState("");
+  const [approvalState, setApprovalState] = useState<ApprovalState>("pending");
   const [activeStep, setActiveStep] = useState(0);
   const [cabState, setCabState] = useState<CabState>("ready");
+  const [cabError, setCabError] = useState("");
   const [cabBriefOpen, setCabBriefOpen] = useState(false);
   const [toast, setToast] = useState("");
   const [data, setData] = useState<OperationsDashboardData | null>(null);
+  const [loadError, setLoadError] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+
+  async function loadDashboard() {
+    setIsLoading(true);
+    setLoadError("");
+    try {
+      setData(await operationsApi.getDashboardData());
+    } catch (error) {
+      setLoadError(error instanceof Error ? error.message : "Unable to load the operations dashboard.");
+    } finally {
+      setIsLoading(false);
+    }
+  }
 
   useEffect(() => {
-    operationsApi.getDashboardData().then(setData);
+    void loadDashboard();
   }, []);
 
   useEffect(() => {
@@ -41,14 +62,7 @@ export function App() {
 
     setActiveStep(0);
     const timer = window.setInterval(() => {
-      setActiveStep((current) => {
-        if (current >= data.investigation.steps.length - 1) {
-          window.clearInterval(timer);
-          window.setTimeout(() => setInvestigationState("complete"), 500);
-          return current;
-        }
-        return current + 1;
-      });
+      setActiveStep((current) => Math.min(current + 1, Math.max(data.investigation.steps.length - 2, 0)));
     }, 650);
 
     return () => window.clearInterval(timer);
@@ -67,7 +81,13 @@ export function App() {
       <div className="loading-screen">
         <div className="panel">
           <p className="eyebrow">Operations Command Centre</p>
-          <h1>Loading operational workspace</h1>
+          <h1>{loadError ? "Unable to load operational data" : "Loading operational workspace"}</h1>
+          {loadError && <p>{loadError}</p>}
+          {loadError && (
+            <button className="primary-button" disabled={isLoading} onClick={() => void loadDashboard()} type="button">
+              {isLoading ? "Retrying" : "Retry"}
+            </button>
+          )}
         </div>
       </div>
     );
@@ -76,11 +96,53 @@ export function App() {
   const selectedIncident =
     data.incidents.find((incident) => incident.id === selectedIncidentId) ??
     data.incidents[0];
+  const investigationStepCount = data.investigation.steps.length;
 
   function selectIncident(id: string) {
     setSelectedIncidentId(id);
     setInvestigationState("ready");
+    setInvestigationResult(null);
+    setInvestigationError("");
+    setApprovalState("pending");
     setActiveStep(0);
+  }
+
+  async function runInvestigation() {
+    setInvestigationState("running");
+    setInvestigationResult(null);
+    setInvestigationError("");
+    setApprovalState("pending");
+    setActiveStep(0);
+    try {
+      const result = await operationsApi.triageIncident(selectedIncident.id);
+      setInvestigationResult(result);
+      setActiveStep(Math.max(investigationStepCount - 1, 0));
+      setInvestigationState("complete");
+    } catch (error) {
+      setInvestigationError(error instanceof Error ? error.message : "The investigation request failed.");
+      setInvestigationState("error");
+    }
+  }
+
+  function resetInvestigation() {
+    setInvestigationState("ready");
+    setInvestigationResult(null);
+    setInvestigationError("");
+    setApprovalState("pending");
+    setActiveStep(0);
+  }
+
+  async function runCabAnalysis() {
+    setCabState("loading");
+    setCabError("");
+    try {
+      const cab = await operationsApi.getCabBriefing();
+      setData((current) => current ? { ...current, cab } : current);
+      setCabState("analysed");
+    } catch (error) {
+      setCabError(error instanceof Error ? error.message : "The CAB analysis request failed.");
+      setCabState("error");
+    }
   }
 
   return (
@@ -149,18 +211,20 @@ export function App() {
             data={data}
             selectedIncident={selectedIncident}
             investigationState={investigationState}
+            investigationResult={investigationResult}
+            investigationError={investigationError}
+            approvalState={approvalState}
             activeStep={activeStep}
             onSelectIncident={selectIncident}
-            onRunInvestigation={() => setInvestigationState("running")}
-            onResetInvestigation={() => setInvestigationState("ready")}
-            onApproveUpdate={async () => {
-              await Promise.all([
-                operationsApi.postTeamsUpdate(),
-                operationsApi.createJiraTask()
-              ]);
-              setToast(
-                "Status update posted to Teams. Jira task OPS-482 created. Next update scheduled in 15 minutes."
-              );
+            onRunInvestigation={() => void runInvestigation()}
+            onResetInvestigation={resetInvestigation}
+            onRejectUpdate={() => {
+              setApprovalState("rejected");
+              setToast("Draft rejected locally. Nothing was sent or created.");
+            }}
+            onApproveUpdate={() => {
+              setApprovalState("approved");
+              setToast("Draft approved locally. No Teams message was posted and no Jira task was created.");
             }}
           />
         )}
@@ -169,25 +233,24 @@ export function App() {
           <CabPage
             data={data}
             state={cabState}
+            error={cabError}
             briefOpen={cabBriefOpen}
-            analyse={() => setCabState("analysed")}
+            analyse={() => void runCabAnalysis()}
             backToQueue={() => {
               setCabState("ready");
+              setCabError("");
               setCabBriefOpen(false);
             }}
             viewBrief={() => setCabBriefOpen((current) => !current)}
-            exportBrief={() => setToast("CAB PDF export prepared.")}
-            notify={async () => {
-              await operationsApi.sendCabBrief();
-              setToast("CAB risk brief sent to CAB members.");
-            }}
+            exportBrief={() => setToast("PDF export is not connected in this MVP.")}
+            approve={() => setToast("CAB brief approved locally. No notification was sent.")}
           />
         )}
       </main>
 
       {toast && (
         <div className="toast" role="status">
-          <strong>Success</strong>
+          <strong>Notice</strong>
           <span>{toast}</span>
         </div>
       )}
@@ -362,19 +425,27 @@ function IncidentsPage({
   data,
   selectedIncident,
   investigationState,
+  investigationResult,
+  investigationError,
+  approvalState,
   activeStep,
   onSelectIncident,
   onRunInvestigation,
   onResetInvestigation,
+  onRejectUpdate,
   onApproveUpdate
 }: {
   data: OperationsDashboardData;
   selectedIncident: IncidentSummary;
   investigationState: InvestigationState;
+  investigationResult: InvestigationResultData | null;
+  investigationError: string;
+  approvalState: ApprovalState;
   activeStep: number;
   onSelectIncident: (incidentId: string) => void;
   onRunInvestigation: () => void;
   onResetInvestigation: () => void;
+  onRejectUpdate: () => void;
   onApproveUpdate: () => void;
 }) {
   const [statusFilter, setStatusFilter] = useState<IncidentStatusFilter>("ALL");
@@ -388,6 +459,15 @@ function IncidentsPage({
     ? selectedIncident
     : filteredIncidents[0] ?? selectedIncident;
 
+  function changeStatusFilter(filter: IncidentStatusFilter) {
+    setStatusFilter(filter);
+    const nextIncidents = filter === "ALL" ? data.incidents : data.incidents.filter((incident) => incident.status === filter);
+    const nextIncident = nextIncidents[0];
+    if (!nextIncidents.some((incident) => incident.id === selectedIncident.id) && nextIncident) {
+      onSelectIncident(nextIncident.id);
+    }
+  }
+
   return (
     <div className="page-stack">
       <section className="incident-workflow">
@@ -395,7 +475,7 @@ function IncidentsPage({
           incidents={filteredIncidents}
           allIncidentCount={data.incidents.length}
           statusFilter={statusFilter}
-          onStatusFilterChange={setStatusFilter}
+          onStatusFilterChange={changeStatusFilter}
           selectedIncidentId={visibleSelectedIncident.id}
           onSelectIncident={onSelectIncident}
         />
@@ -403,9 +483,13 @@ function IncidentsPage({
           data={data}
           incident={visibleSelectedIncident}
           state={investigationState}
+          result={investigationResult}
+          error={investigationError}
+          approvalState={approvalState}
           activeStep={activeStep}
           onRunInvestigation={onRunInvestigation}
           onResetInvestigation={onResetInvestigation}
+          onRejectUpdate={onRejectUpdate}
           onApproveUpdate={onApproveUpdate}
         />
       </section>
@@ -487,17 +571,25 @@ function InvestigationWorkspace({
   data,
   incident,
   state,
+  result,
+  error,
+  approvalState,
   activeStep,
   onRunInvestigation,
   onResetInvestigation,
+  onRejectUpdate,
   onApproveUpdate
 }: {
   data: OperationsDashboardData;
   incident: IncidentSummary;
   state: InvestigationState;
+  result: InvestigationResultData | null;
+  error: string;
+  approvalState: ApprovalState;
   activeStep: number;
   onRunInvestigation: () => void;
   onResetInvestigation: () => void;
+  onRejectUpdate: () => void;
   onApproveUpdate: () => void;
 }) {
   const visibleActivity = useMemo(() => {
@@ -569,7 +661,9 @@ function InvestigationWorkspace({
                 ? "Investigation Running"
                 : state === "complete"
                   ? "Investigation Complete"
-                : "Run Investigation"}
+                  : state === "error"
+                    ? "Retry Investigation"
+                    : "Run Investigation"}
           </button>
         </div>
 
@@ -622,11 +716,24 @@ function InvestigationWorkspace({
         </div>
       </section>
 
-      {state === "complete" && (
+      {state === "error" && (
+        <section className="alert-panel" role="alert">
+          <p className="eyebrow">Investigation Failed</p>
+          <h2>Backend evidence could not be retrieved</h2>
+          <p>{error}</p>
+          <button className="primary-button" onClick={onRunInvestigation} type="button">
+            Retry Investigation
+          </button>
+        </section>
+      )}
+
+      {state === "complete" && result && (
         <InvestigationResult
-          data={data}
+          result={result}
           incident={incident}
+          approvalState={approvalState}
           onResetInvestigation={onResetInvestigation}
+          onRejectUpdate={onRejectUpdate}
           onApproveUpdate={onApproveUpdate}
         />
       )}
@@ -635,18 +742,20 @@ function InvestigationWorkspace({
 }
 
 function InvestigationResult({
-  data,
+  result,
   incident,
+  approvalState,
   onResetInvestigation,
+  onRejectUpdate,
   onApproveUpdate
 }: {
-  data: OperationsDashboardData;
+  result: InvestigationResultData;
   incident: IncidentSummary;
+  approvalState: ApprovalState;
   onResetInvestigation: () => void;
+  onRejectUpdate: () => void;
   onApproveUpdate: () => void;
 }) {
-  const { result } = data.investigation;
-
   return (
     <>
       <section className="split-grid equal">
@@ -697,16 +806,17 @@ function InvestigationResult({
             aria-label="Teams update preview"
             defaultValue={result.teamsUpdateDraft}
           />
+          <p>Approval is recorded in this browser only. No message or Jira task is sent.</p>
         </div>
         <div className="approval-actions">
           <button className="secondary-button" onClick={onResetInvestigation} type="button">
             Re-run Investigation
           </button>
-          <button className="secondary-button" type="button">
+          <button className="secondary-button" disabled={approvalState === "rejected"} onClick={onRejectUpdate} type="button">
             Reject
           </button>
-          <button className="primary-button" onClick={onApproveUpdate} type="button">
-            Approve & Post Update
+          <button className="primary-button" disabled={approvalState === "approved"} onClick={onApproveUpdate} type="button">
+            {approvalState === "approved" ? "Draft Approved" : "Approve Draft"}
           </button>
         </div>
       </section>
@@ -717,27 +827,36 @@ function InvestigationResult({
 function CabPage({
   data,
   state,
+  error,
   briefOpen,
   analyse,
   backToQueue,
   viewBrief,
   exportBrief,
-  notify
+  approve
 }: {
   data: OperationsDashboardData;
   state: CabState;
+  error: string;
   briefOpen: boolean;
   analyse: () => void;
   backToQueue: () => void;
   viewBrief: () => void;
   exportBrief: () => void;
-  notify: () => void;
+  approve: () => void;
 }) {
   const { cab } = data;
 
-  if (state === "ready") {
+  if (state !== "analysed") {
     return (
       <div className="page-stack">
+        {state === "error" && (
+          <section className="alert-panel" role="alert">
+            <p className="eyebrow">CAB Analysis Failed</p>
+            <h2>Backend change data could not be refreshed</h2>
+            <p>{error}</p>
+          </section>
+        )}
         <section className="overview-hero">
           <div>
             <p className="eyebrow">Change Advisory Board</p>
@@ -747,8 +866,8 @@ function CabPage({
               production windows.
             </p>
           </div>
-          <button className="primary-button" onClick={analyse} type="button">
-            Analyse Changes
+          <button className="primary-button" disabled={state === "loading"} onClick={analyse} type="button">
+            {state === "loading" ? "Analysing Changes" : state === "error" ? "Retry Analysis" : "Analyse Changes"}
           </button>
         </section>
 
@@ -850,8 +969,8 @@ function CabPage({
         <button className="secondary-button" onClick={exportBrief} type="button">
           Export PDF
         </button>
-        <button className="primary-button" onClick={notify} type="button">
-          Send to CAB Members
+        <button className="primary-button" onClick={approve} type="button">
+          Approve Brief
         </button>
       </div>
     </div>

@@ -1,29 +1,21 @@
 # Operations Command Centre
 
-React frontend for the IT Operations Command Centre.
+React dashboard for the OpsPilot backend.
 
-## Mock data boundary
+## Run locally
 
-All temporary local data lives in:
+Start the backend from the repository root:
 
-```text
-src/mocks/
+```bash
+python3 -m uvicorn backend.app:app --reload
 ```
 
-Application screens do not import this folder directly. They call:
+Start the frontend in another terminal:
 
-```text
-src/services/operationsApi.ts
+```bash
+cd frontend
+npm install
+npm run dev
 ```
 
-When the mock REST APIs are ready, replace the implementation inside
-`operationsApi.ts` with real `fetch` calls and delete `src/mocks/`.
-
-Keep the shared frontend data contracts in:
-
-```text
-src/domain/operations.ts
-```
-
-Those types are the agreement between the UI and whichever backend adapter is
-active.
+Vite proxies `/api` to `http://127.0.0.1:8000`. Set `VITE_API_BASE_URL` to override the API base URL in another environment. Backend failures are shown in the dashboard and never fall back to mock results.

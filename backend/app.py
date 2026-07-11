@@ -24,6 +24,7 @@ def index() -> dict:
         "docs": "/docs",
         "routes": {
             "GET /health": "Service health check",
+            "GET /incidents": "List fixture incidents",
             "GET /incidents/{incident_id}": "View a fixture incident",
             "GET /triage-incident?incident_id=INC-1001": "Browser-friendly triage demo",
             "POST /triage-incident": "Triage an incident with JSON body {incident_id}",
@@ -37,6 +38,11 @@ def index() -> dict:
 @app.get("/health")
 def health() -> dict:
     return {"status": "ok", "service": "incident-commander-orchestrator"}
+
+
+@app.get("/incidents")
+def incidents() -> list[dict]:
+    return connectors.list_demo_incidents()
 
 
 @app.get("/incidents/{incident_id}")
