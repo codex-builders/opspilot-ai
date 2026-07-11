@@ -921,6 +921,8 @@ function Sparkline({
   const min = Math.min(...values);
   const max = Math.max(...values);
   const range = Math.max(max - min, 1);
+  const firstValue = values[0] ?? 0;
+  const lastValue = values[values.length - 1] ?? 0;
   const points = values
     .map((value, index) => {
       const x = (index / Math.max(values.length - 1, 1)) * 100;
@@ -930,9 +932,21 @@ function Sparkline({
     .join(" ");
 
   return (
-    <svg className={`sparkline ${tone}`} viewBox="0 0 100 42" role="img" aria-label="Metric trend">
-      <polyline points={points} />
-    </svg>
+    <div className="sparkline-block">
+      <svg
+        className={`sparkline ${tone}`}
+        viewBox="0 0 100 42"
+        role="img"
+        aria-label={`Trend from ${formatTrendValue(firstValue)} to ${formatTrendValue(lastValue)}`}
+      >
+        <line className="sparkline-baseline" x1="0" x2="100" y1="38" y2="38" />
+        <polyline points={points} />
+      </svg>
+      <div className="sparkline-meta">
+        <span>Start {formatTrendValue(firstValue)}</span>
+        <span>Now {formatTrendValue(lastValue)}</span>
+      </div>
+    </div>
   );
 }
 
@@ -955,6 +969,19 @@ function TrendPanel({
   onPeriodChange: (periodId: string) => void;
   onSeverityChange: (filter: TrendFilter) => void;
 }) {
+  const flatValues = series.flatMap((item) => item.values);
+  const chartMax = Math.max(...flatValues, 1);
+  const yTicks = Array.from(
+    new Set([chartMax, Math.ceil(chartMax / 2), 0])
+  ).sort((a, b) => b - a);
+  const totalsByPeriod = xLabels.map((_, index) =>
+    series.reduce((sum, item) => sum + (item.values[index] ?? 0), 0)
+  );
+  const latestTotal = totalsByPeriod[totalsByPeriod.length - 1] ?? 0;
+  const peakTotal = Math.max(...totalsByPeriod, 0);
+  const firstTotal = totalsByPeriod[0] ?? 0;
+  const netChange = latestTotal - firstTotal;
+
   return (
     <div className="trend-panel">
       <div className="chart-toolbar">
@@ -984,30 +1011,59 @@ function TrendPanel({
           </select>
         </label>
       </div>
-      <svg viewBox="0 0 520 180" role="img" aria-label="Incident volume trend">
-        {[0, 1, 2, 3].map((line) => (
-          <line
-            key={line}
-            className="chart-grid-line"
-            x1="28"
-            x2="500"
-            y1={30 + line * 38}
-            y2={30 + line * 38}
-          />
-        ))}
-        {series.map((item) => (
-          <polyline
-            className={`chart-line ${item.tone}`}
-            key={item.label}
-            points={toChartPoints(item.values, series)}
-          />
-        ))}
+      <div className="chart-summary-row" aria-label="Chart summary">
+        <div>
+          <span>Current open</span>
+          <strong>{latestTotal}</strong>
+        </div>
+        <div>
+          <span>Peak in range</span>
+          <strong>{peakTotal}</strong>
+        </div>
+        <div>
+          <span>Net change</span>
+          <strong>{netChange > 0 ? `+${netChange}` : netChange}</strong>
+        </div>
+      </div>
+      <svg viewBox="0 0 540 158" role="img" aria-label="Incident volume trend by open incident count">
+        <text className="chart-y-axis-title" x="16" y="86" transform="rotate(-90 16 86)">
+          Open incident count
+        </text>
+        {yTicks.map((tick) => {
+          const y = chartY(tick, chartMax);
+          return (
+            <g key={tick}>
+              <line className="chart-grid-line" x1="64" x2="500" y1={y} y2={y} />
+              <text className="chart-y-tick" x="52" y={y + 4}>
+                {tick}
+              </text>
+            </g>
+          );
+        })}
+        {series.map((item) => {
+          const lastValue = item.values[item.values.length - 1] ?? 0;
+          return (
+            <g key={item.label}>
+              <polyline
+                className={`chart-line ${item.tone}`}
+                points={toChartPoints(item.values, chartMax)}
+              />
+              <text
+                className={`chart-end-label ${item.tone}`}
+                x="508"
+                y={chartY(lastValue, chartMax) + 4}
+              >
+                {lastValue}
+              </text>
+            </g>
+          );
+        })}
         {xLabels.map((label, index) => (
           <text
             className="chart-axis-label"
             key={label}
-            x={28 + (index / Math.max(xLabels.length - 1, 1)) * 472}
-            y="170"
+            x={chartX(index, xLabels.length)}
+            y="148"
           >
             {label}
           </text>
@@ -1026,12 +1082,23 @@ function TrendPanel({
   );
 }
 
-function toChartPoints(values: number[], series: TrendSeries[]) {
-  const max = Math.max(...series.flatMap((item) => item.values), 1);
+function formatTrendValue(value: number) {
+  return Number.isInteger(value) ? String(value) : value.toFixed(1);
+}
+
+function chartX(index: number, length: number) {
+  return 64 + (index / Math.max(length - 1, 1)) * 436;
+}
+
+function chartY(value: number, chartMax: number) {
+  return 126 - (value / Math.max(chartMax, 1)) * 96;
+}
+
+function toChartPoints(values: number[], chartMax: number) {
   return values
     .map((value, index) => {
-      const x = 28 + (index / Math.max(values.length - 1, 1)) * 472;
-      const y = 144 - (value / max) * 112;
+      const x = chartX(index, values.length);
+      const y = chartY(value, chartMax);
       return `${x},${y}`;
     })
     .join(" ");

@@ -368,15 +368,15 @@ p {
 }
 
 .metric-card {
-  min-height: 128px;
+  min-height: 112px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 18px;
+  gap: 14px;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 8px;
-  padding: 16px;
+  padding: 14px 16px;
   box-shadow: var(--shadow);
 }
 
@@ -388,7 +388,7 @@ p {
 
 .metric-card strong {
   display: block;
-  font-size: 36px;
+  font-size: 32px;
   letter-spacing: 0;
 }
 
@@ -416,10 +416,22 @@ p {
   color: var(--success);
 }
 
+.sparkline-block {
+  display: grid;
+  gap: 5px;
+  justify-items: end;
+  flex: 0 0 132px;
+}
+
 .sparkline {
-  width: 118px;
+  width: 132px;
   height: 44px;
   flex: 0 0 auto;
+}
+
+.sparkline-baseline {
+  stroke: #e2e8f0;
+  stroke-width: 1;
 }
 
 .sparkline polyline {
@@ -428,6 +440,19 @@ p {
   stroke-linecap: round;
   stroke-linejoin: round;
   stroke-width: 3;
+}
+
+.sparkline-meta {
+  width: 132px;
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.sparkline-meta span {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 800;
 }
 
 .sparkline.neutral {
@@ -529,7 +554,7 @@ p {
 
 .trend-panel {
   display: grid;
-  gap: 12px;
+  gap: 10px;
 }
 
 .chart-toolbar {
@@ -566,7 +591,8 @@ p {
 
 .trend-panel svg {
   width: 100%;
-  min-height: 190px;
+  min-height: 158px;
+  max-height: 178px;
 }
 
 .chart-axis-label {
@@ -576,6 +602,21 @@ p {
   text-anchor: middle;
 }
 
+.chart-y-axis-title {
+  fill: var(--muted);
+  font-size: 10px;
+  font-weight: 800;
+  text-anchor: middle;
+  text-transform: uppercase;
+}
+
+.chart-y-tick {
+  fill: var(--muted);
+  font-size: 11px;
+  font-weight: 800;
+  text-anchor: end;
+}
+
 .chart-grid-line {
   stroke: #e2e8f0;
   stroke-width: 1;
@@ -583,7 +624,7 @@ p {
 
 .chart-line {
   fill: none;
-  stroke-width: 4;
+  stroke-width: 3.5;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
@@ -602,6 +643,54 @@ p {
 
 .chart-line.neutral {
   stroke: var(--info);
+}
+
+.chart-end-label {
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.chart-end-label.critical {
+  fill: var(--critical);
+}
+
+.chart-end-label.warning {
+  fill: var(--warning);
+}
+
+.chart-end-label.success {
+  fill: var(--success);
+}
+
+.chart-end-label.neutral {
+  fill: var(--info);
+}
+
+.chart-summary-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(120px, 1fr));
+  gap: 10px;
+}
+
+.chart-summary-row div {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface-soft);
+  padding: 8px 10px;
+}
+
+.chart-summary-row span {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.chart-summary-row strong {
+  font-size: 20px;
 }
 
 .chart-legend {
@@ -1193,12 +1282,21 @@ textarea {
 @media (max-width: 1400px) {
   .operations-grid,
   .summary-band,
-  .overview-metrics,
   .cab-review-grid {
     grid-template-columns: 1fr;
   }
 
+  .overview-metrics {
+    grid-template-columns: repeat(2, minmax(220px, 1fr));
+  }
+
   .incident-queue {
     position: static;
+  }
+}
+
+@media (max-width: 1080px) {
+  .overview-metrics {
+    grid-template-columns: 1fr;
   }
 }
